@@ -5,19 +5,12 @@ import feedparser;
 import datetime;
 import time;
 from twitter import Twitter, OAuth;
+import config
 
 #lqdn_en_rss_url = "http://www.laquadrature.net/en/rss.xml" ;
 #lqdn_fr_rss_url = "http://www.laquadrature.net/fr/rss.xml" ;
 lqdn_rp_en_rss_url = "http://www.laquadrature.net/en/press-review/feed" ;
 lqdn_rp_fr_rss_url = "http://www.laquadrature.net/fr/revue-de-presse/feed" ;
-
-#Credential for Twitter
-consKey = '';
-consSec = '';
-token = ''
-tokenSec = '';
-
-
 
 
 class RSSFeed(object):
@@ -39,7 +32,11 @@ class RSSFeed(object):
         entries = self.feed['entries'];
         i = 0;
 
-        entry = entries[i];
+        try:
+            entry = entries[i];
+        except:
+            print "Can't open the first entry ... ";
+            return;
         myPubliDate = time.strptime(entry['published'],"%a, %d %b %Y %H:%M:%S +0000");
 #        myPubliDate = time.strptime('2014-01-22 12:00:00' , '%Y-%m-%d %H:%M:%S');
 
@@ -47,7 +44,11 @@ class RSSFeed(object):
             print "New RSS found : %s" % entry['title'];
             self.tweetEntry(entry);
             i = i+1;
-            entry = entries[i];
+            try :
+                entry = entries[i];
+            except:
+                print "Can't get the entry %d on %d" % (i, len(entries));
+                return;
             myPubliDate = time.strptime(entry['published'],
                     "%a, %d %b %Y %H:%M:%S +0000");
 
@@ -55,11 +56,14 @@ class RSSFeed(object):
             
     def tweetEntry(self, entry):
 
-        t= Twitter( auth=OAuth(token, tokenSec, consKey, consSec));
+        t= Twitter( auth=OAuth(config.TOKEN,config.TOKENSEC, config.CONSKEY, config.CONSSEC));
         msg ="[%s]%s - %s" % (self.label, entry['title'], entry['link']); 
 
         print "Twitter : %s" % (msg);
-        t.statuses.update(status=msg);
+        try:
+            t.statuses.update(status=msg);
+        except:
+            print "Error while twitting : %s" % msg;
 
     def run(self):
         self.openRSS();
