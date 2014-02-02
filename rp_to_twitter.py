@@ -23,9 +23,9 @@ class RSSFeed(object):
 
     def openRSS(self):
         self.feed = feedparser.parse(self.url);
-        self.lastEntry = time.strptime(self.feed['entries'][0]['published']
-                ,"%a, %d %b %Y %H:%M:%S +0000");
-        print "Initialized RSS time : %s" %self.lastEntry;
+        self.lastEntry = self.feed['entries'][0]['title']
+
+        print "Initialized RSS : %s" %self.lastEntry;
         
     def checkForNewEntries(self):
         self.feed = feedparser.parse(self.url);
@@ -37,10 +37,10 @@ class RSSFeed(object):
         except:
             print "Can't open the first entry ... ";
             return;
-        myPubliDate = time.strptime(entry['published'],"%a, %d %b %Y %H:%M:%S +0000");
-#        myPubliDate = time.strptime('2014-01-22 12:00:00' , '%Y-%m-%d %H:%M:%S');
 
-        while ((myPubliDate > self.lastEntry) and (i+1 < len(entries))) :
+        entryTitle = entry['title'];
+
+        while ((entryTitle != self.lastEntry) and (i+1 < len(entries))) :
             print "New RSS found : %s" % entry['title'];
             self.tweetEntry(entry);
             i = i+1;
@@ -49,10 +49,9 @@ class RSSFeed(object):
             except:
                 print "Can't get the entry %d on %d" % (i, len(entries));
                 return;
-            myPubliDate = time.strptime(entry['published'],
-                    "%a, %d %b %Y %H:%M:%S +0000");
+            entryTitle = entry['title']
 
-        self.lastEntry = myPubliDate;
+        self.lastEntry = entryTitle;
             
     def tweetEntry(self, entry):
 
