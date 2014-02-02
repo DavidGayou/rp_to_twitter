@@ -1,0 +1,8 @@
+#!/usr/bin/python
+
+
+#Credential for Twitter
+CONSKEY = '';
+CONSSEC = '';
+TOKEN = ''
+TOKENSEC = '';
