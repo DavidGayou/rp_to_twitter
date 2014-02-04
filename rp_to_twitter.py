@@ -70,7 +70,6 @@ class RSSFeed(object):
         while True:
             self.checkForNewEntries();
             time.sleep(180);
-            //print "New check";
 
 #####################################################################################
 
