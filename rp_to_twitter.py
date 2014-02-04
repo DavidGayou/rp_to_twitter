@@ -25,11 +25,10 @@ class RSSFeed(object):
         self.feed = feedparser.parse(self.url);
         self.lastEntry = self.feed['entries'][0]['title']
 
-        print "Initialized RSS : %s" %self.lastEntry;
-        
+        print "[%s] Initialized RSS : %s" % (self.label, self.lastEntry)
     def checkForNewEntries(self):
 
-        print "Check for New entries, last entry tweeted was : %s" % self.lastEntry  
+        print "[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry)
         self.feed = feedparser.parse(self.url);
         entries = self.feed['entries'];
         i = 0;
@@ -37,19 +36,19 @@ class RSSFeed(object):
         try:
             entry = entries[i];
         except:
-            print "Can't open the first entry ... ";
+            print "[%s] Can't open the first entry ... " % (self.label);
             return;
 
         entryTitle = entry['title'];
 
         while ((entryTitle != self.lastEntry) and (i+1 < len(entries))) :
-            print "New RSS found : %s" % entry['title'];
+            print "[%s] New RSS found : %s" % (self.label, entry['title']);
             self.tweetEntry(entry);
             i = i+1;
             try :
                 entry = entries[i];
             except:
-                print "Can't get the entry %d on %d" % (i, len(entries));
+                print "[%s] Can't get the entry %d on %d" % (self.label, i, len(entries));
                 return;
             entryTitle = entry['title']
 
