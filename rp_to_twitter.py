@@ -28,6 +28,8 @@ class RSSFeed(object):
         print "Initialized RSS : %s" %self.lastEntry;
         
     def checkForNewEntries(self):
+
+        print "Check for New entries, last entry tweeted was : %s" % self.lastEntry  
         self.feed = feedparser.parse(self.url);
         entries = self.feed['entries'];
         i = 0;
@@ -68,8 +70,8 @@ class RSSFeed(object):
         self.openRSS();
         while True:
             self.checkForNewEntries();
-            time.sleep(10);
-            print "New check";
+            time.sleep(180);
+            //print "New check";
 
 #####################################################################################
 
