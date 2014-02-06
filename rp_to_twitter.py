@@ -51,8 +51,7 @@ class RSSFeed(object):
                 print "[%s] Can't get the entry %d on %d" % (self.label, i, len(entries));
                 return;
             entryTitle = entry['title']
-
-        self.lastEntry = entryTitle;
+        self.lastEntry = entries[0]['title']
             
     def tweetEntry(self, entry):
 
