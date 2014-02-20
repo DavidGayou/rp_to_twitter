@@ -20,15 +20,22 @@ class RSSFeed(object):
         self.feed = None;
         self.url = url;
         self.label = label;
+        self.logFile = None;
+
+    def log(self, message):
+        print message
+        self.logFile.write( "%s - %s" %(time.asctime(), message))
 
     def openRSS(self):
         self.feed = feedparser.parse(self.url);
         self.lastEntry = self.feed['entries'][0]['title']
+        self.logFile = open('rp_to_twitter.log', 'w+')
 
-        print "[%s] Initialized RSS : %s" % (self.label, self.lastEntry)
     def checkForNewEntries(self):
 
-        print "[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry)
+        self.log("[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry))
+        #print "[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry)
+        #self.logFile("[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry)
         self.feed = feedparser.parse(self.url);
         entries = self.feed['entries'];
         i = 0;
@@ -36,19 +43,22 @@ class RSSFeed(object):
         try:
             entry = entries[i];
         except:
-            print "[%s] Can't open the first entry ... " % (self.label);
+            self.log( "[%s] Can't open the first entry ... " % (self.label))
+            #print "[%s] Can't open the first entry ... " % (self.label);
             return;
 
         entryTitle = entry['title'];
 
         while ((entryTitle != self.lastEntry) and (i+1 < len(entries))) :
-            print "[%s] New RSS found : %s" % (self.label, entry['title']);
+            self.log( "[%s] New RSS found : %s" % (self.label, entry['title']))
+            #print "[%s] New RSS found : %s" % (self.label, entry['title']);
             self.tweetEntry(entry);
             i = i+1;
             try :
                 entry = entries[i];
             except:
-                print "[%s] Can't get the entry %d on %d" % (self.label, i, len(entries));
+                self.log( "[%s] Can't get the entry %d on %d" % (self.label, i, len(entries)))
+                #print "[%s] Can't get the entry %d on %d" % (self.label, i, len(entries));
                 return;
             entryTitle = entry['title']
         self.lastEntry = entries[0]['title']
@@ -58,11 +68,13 @@ class RSSFeed(object):
         t= Twitter( auth=OAuth(config.TOKEN,config.TOKENSEC, config.CONSKEY, config.CONSSEC));
         msg ="[%s]%s - %s" % (self.label, entry['title'], entry['link']); 
 
-        print "Twitter : %s" % (msg);
+        self.log( "Twitter : %s" % (msg))
+        #print "Twitter : %s" % (msg);
         try:
             t.statuses.update(status=msg);
         except:
-            print "Error while twitting : %s" % msg;
+            self.log( "Error while twitting : %s" % msg)
+            #print "Error while twitting : %s" % msg;
 
     def run(self):
         self.openRSS();
