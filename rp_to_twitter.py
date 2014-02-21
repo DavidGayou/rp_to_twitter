@@ -12,6 +12,7 @@ import config
 lqdn_rp_en_rss_url = "http://www.laquadrature.net/en/press-review/feed" ;
 lqdn_rp_fr_rss_url = "http://www.laquadrature.net/fr/revue-de-presse/feed" ;
 
+logFile = open('rp_to_twitter.log', 'w+', 0)
 
 class RSSFeed(object):
 
@@ -23,20 +24,20 @@ class RSSFeed(object):
         self.logFile = None;
 
     def log(self, message):
-        logMessage =  "%s - %s \n" %(time.asctime(), message)
+        logMessage =  "%s - %s" %(time.asctime(), message)
         print logMessage
-        self.logFile.write(logMessage.encode('utf-8'))
+        logMessage = "%s\n" %logMessage
+        logFile.write(logMessage.encode('utf-8'))
 
     def openRSS(self):
         self.feed = feedparser.parse(self.url);
         self.lastEntry = self.feed['entries'][0]['title']
-        self.logFile = open('rp_to_twitter.log', 'w+', 1)
+       # self.logFile = open('rp_to_twitter.log', 'w+', 0)
 
     def checkForNewEntries(self):
 
         self.log("[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry))
         #print "[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry)
-        #self.logFile("[%s] Check for New entries, last entry tweeted was : %s" %(self.label,  self.lastEntry)
         self.feed = feedparser.parse(self.url);
         entries = self.feed['entries'];
         i = 0;
@@ -97,6 +98,7 @@ while True:
     myFeed.checkForNewEntries();
     myFeedFr.checkForNewEntries();
     time.sleep(180);
+
     print "New check after 3 minutes";
 
 
