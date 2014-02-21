@@ -23,13 +23,14 @@ class RSSFeed(object):
         self.logFile = None;
 
     def log(self, message):
-        print message
-        self.logFile.write( "%s - %s" %(time.asctime(), message))
+        logMessage =  "%s - %s \n" %(time.asctime(), message)
+        print logMessage
+        self.logFile.write(logMessage.encode('utf-8'))
 
     def openRSS(self):
         self.feed = feedparser.parse(self.url);
         self.lastEntry = self.feed['entries'][0]['title']
-        self.logFile = open('rp_to_twitter.log', 'w+')
+        self.logFile = open('rp_to_twitter.log', 'w+', 1)
 
     def checkForNewEntries(self):
 
