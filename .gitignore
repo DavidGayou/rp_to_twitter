@@ -1,1 +1,5 @@
 config.py
+*.pyc
+rp_to_twitter.log
+ve/
+
